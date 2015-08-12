@@ -1,8 +1,6 @@
 # Rubytypeformio
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/rubytypeformio`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+A ruby client library for the typeform i/o api
 
 ## Installation
 
@@ -22,7 +20,25 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+See [examples/examples.rb](https://github.com/zachgoldstein/rubytypeformio/blob/master/examples/examples.rb) for full examples
+
+2 second example:
+```ruby
+
+# First create the fields...
+short_field = Rubytypeformio::ShortTextField.new('will it work?', 'test short text field', true)
+long_field = Rubytypeformio::LongTextField.new('will it work?', 'test long text field', true)
+
+# Then create your form...
+form = Rubytypeformio::Form.new('A simple form', 'http://311008e2.ngrok.io', 123, [short_field, long_field]])
+
+# Then post it to issue the request against the typeform API. This returns a new form object with the response data
+created_form = form.post
+
+# And now you can do what you will with it!
+puts "Form url: " + created_form.links[1].rel
+
+```
 
 ## Development
 
@@ -32,8 +48,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/rubytypeformio. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](contributor-covenant.org) code of conduct.
-
+Bug reports and pull requests are welcome on GitHub at https://github.com/zachgolstein/rubytypeformio. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](contributor-covenant.org) code of conduct.
 
 ## License
 

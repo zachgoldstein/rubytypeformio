@@ -74,8 +74,9 @@ new_form = Rubytypeformio::Form.from_json(json_obj)
 # puts "unmarshalled new form"
 # puts new_form.pretty
 
-
 created_form = new_form.post
 puts "created form remotely"
 puts created_form.pretty
+
+puts "Form url: " + created_form.links[1].rel
 
