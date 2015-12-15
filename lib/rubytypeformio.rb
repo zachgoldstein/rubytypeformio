@@ -28,9 +28,5 @@ module Rubytypeformio
     puts 'O HAI'
 
     #   Make request to typeform api with faraday
-
-
-
   end
 end
-

@@ -3,10 +3,9 @@ require_relative 'choice'
 
 module Rubytypeformio
   class ChoiceField < Field
-
     attr_accessor :choices
 
-    def initialize (question, description, required, type, choices)
+    def initialize(question, description, required, type, choices)
       super(question, description, required, type)
       @choices = choices
     end
@@ -15,12 +14,10 @@ module Rubytypeformio
       hash = super.to_h
 
       hash[:choices] = []
-      @choices.each { |c|
+      @choices.each do |c|
         hash[:choices].push(c.to_h)
-      }
-      return hash
+      end
+      hash
     end
-
   end
 end
-
