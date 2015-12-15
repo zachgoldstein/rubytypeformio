@@ -2,11 +2,10 @@ require 'json'
 require_relative 'base'
 
 module Rubytypeformio
-
   class Field < Base
     attr_accessor :id, :description, :question, :required, :type
 
-    def initialize (question, description, required, type)
+    def initialize(question, description, required, type)
       @description = description
       @question = question
       @required = required
@@ -14,27 +13,27 @@ module Rubytypeformio
     end
 
     def to_json
-      JSON.dump(self.to_h)
+      JSON.dump(to_h)
     end
 
     def to_h
       hash = {
-          :description => @description,
-          :question => @question,
-          :required => @required,
-          :type => @type,
-          :id => @id,
+        description: @description,
+        question: @question,
+        required: @required,
+        type: @type,
+        id: @id
       }
     end
 
     def self.from_json(string)
       data = JSON.load(string)
-      obj = self.new( data["description"],
-                      data["question"],
-                      data["required"],
-                      data["type"] )
-      obj.id = data["id"]
-      return obj
+      obj = new(data['description'],
+                data['question'],
+                data['required'],
+                data['type'])
+      obj.id = data['id']
+      obj
     end
   end
 end

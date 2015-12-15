@@ -38,7 +38,6 @@ bottom_choice = Rubytypeformio::Choice.new('bottom')
 choices = [top_choice, bottom_choice]
 dropdown_field = Rubytypeformio::DropdownField.new('which option would you pick?', 'test picture choice field', true, choices)
 
-
 opinion_field = Rubytypeformio::OpinionField.new('will it work?', 'test statement field', true)
 rating_field = Rubytypeformio::RatingField.new('will it work?', 'test rating field', true)
 number_field = Rubytypeformio::NumberField.new('will it work?', 'test number field', true)
@@ -65,7 +64,7 @@ fields = [
 ]
 
 form = Rubytypeformio::Form.new('A simple form', 'http://311008e2.ngrok.io', 123, fields)
-puts "manually created new form"
+puts 'manually created new form'
 puts form.pretty
 
 json_obj = form.to_json
@@ -75,8 +74,7 @@ new_form = Rubytypeformio::Form.from_json(json_obj)
 # puts new_form.pretty
 
 created_form = new_form.post
-puts "created form remotely"
+puts 'created form remotely'
 puts created_form.pretty
 
-puts "Form url: " + created_form.links[1].rel
-
+puts 'Form url: ' + created_form.links[1].rel

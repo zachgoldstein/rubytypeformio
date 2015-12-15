@@ -20,12 +20,10 @@ require_relative 'legal_field'
 require_relative 'yes_no_field'
 
 module Rubytypeformio
-
   class Form < Base
-
     attr_accessor :id, :links, :title, :design_id, :webhook_submit_url, :fields
 
-    def initialize (title, webhook, design_id, fields)
+    def initialize(title, webhook, design_id, fields)
       @title = title
       @webhook_submit_url = webhook
       @design_id = design_id
@@ -34,101 +32,95 @@ module Rubytypeformio
 
     def to_h
       hash = {
-          :id => @id,
-          :title => @title,
-          :design_id => @design_id,
-          :webhook_submit_url => @webhook_submit_url
+        id: @id,
+        title: @title,
+        design_id: @design_id,
+        webhook_submit_url: @webhook_submit_url
       }
 
       hash[:fields] = []
-      @fields.each { |f|
+      @fields.each do |f|
         hash[:fields].push(f.to_h)
-      }
+      end
       hash[:links] = []
-      if (!@links.nil?)
-        @links.each { |l|
+      unless @links.nil?
+        @links.each do |l|
           hash[:links].push(l.to_h)
-        }
+        end
       end
 
-      return hash
-
+      hash
     end
 
     def to_json
-      JSON.dump(self.to_h)
+      JSON.dump(to_h)
     end
 
     def self.from_json(string)
       data = JSON.load(string)
       fields = []
-      data["fields"].each { |f|
-
+      data['fields'].each do |f|
         # @TODO: figure out a cleaner way to do this case statement
-        case f["type"]
-          when 'short_text'
-            fields.push(Rubytypeformio::ShortTextField.from_json(f.to_json))
-          when 'long_text_field'
-            fields.push(Rubytypeformio::LongTextField.from_json(f.to_json))
-          when 'statement'
-            fields.push(Rubytypeformio::StatementField.from_json(f.to_json))
-          when 'multiple_choice'
-            fields.push(Rubytypeformio::MultipleChoiceField.from_json(f.to_json))
-          when 'picture_choice'
-            fields.push(Rubytypeformio::PictureChoiceField.from_json(f.to_json))
-          when 'dropdown'
-            fields.push(Rubytypeformio::DropdownField.from_json(f.to_json))
-          when 'yes_no'
-            fields.push(Rubytypeformio::YesNoField.from_json(f.to_json))
-          when 'number'
-            fields.push(Rubytypeformio::NumberField.from_json(f.to_json))
-          when 'rating'
-            fields.push(Rubytypeformio::RatingField.from_json(f.to_json))
-          when 'opinion_scale'
-            fields.push(Rubytypeformio::OpinionField.from_json(f.to_json))
-          when 'email'
-            fields.push(Rubytypeformio::EmailField.from_json(f.to_json))
-          when 'website'
-            fields.push(Rubytypeformio::WebsiteField.from_json(f.to_json))
-          when 'legal'
-            fields.push(Rubytypeformio::LegalField.from_json(f.to_json))
-          else
-            fields.push(Rubytypeformio::Field.from_json(f.to_json))
+        case f['type']
+        when 'short_text'
+          fields.push(Rubytypeformio::ShortTextField.from_json(f.to_json))
+        when 'long_text_field'
+          fields.push(Rubytypeformio::LongTextField.from_json(f.to_json))
+        when 'statement'
+          fields.push(Rubytypeformio::StatementField.from_json(f.to_json))
+        when 'multiple_choice'
+          fields.push(Rubytypeformio::MultipleChoiceField.from_json(f.to_json))
+        when 'picture_choice'
+          fields.push(Rubytypeformio::PictureChoiceField.from_json(f.to_json))
+        when 'dropdown'
+          fields.push(Rubytypeformio::DropdownField.from_json(f.to_json))
+        when 'yes_no'
+          fields.push(Rubytypeformio::YesNoField.from_json(f.to_json))
+        when 'number'
+          fields.push(Rubytypeformio::NumberField.from_json(f.to_json))
+        when 'rating'
+          fields.push(Rubytypeformio::RatingField.from_json(f.to_json))
+        when 'opinion_scale'
+          fields.push(Rubytypeformio::OpinionField.from_json(f.to_json))
+        when 'email'
+          fields.push(Rubytypeformio::EmailField.from_json(f.to_json))
+        when 'website'
+          fields.push(Rubytypeformio::WebsiteField.from_json(f.to_json))
+        when 'legal'
+          fields.push(Rubytypeformio::LegalField.from_json(f.to_json))
+        else
+          fields.push(Rubytypeformio::Field.from_json(f.to_json))
         end
+      end
 
-      }
+      obj = new(data['title'],
+                data['webhook_submit_url'],
+                data['design_id'],
+                fields)
 
-      obj = self.new(data["title"],
-                     data["webhook_submit_url"],
-                     data["design_id"],
-                     fields)
-
-      if (data["links"])
+      if data['links']
         links = []
-        data["links"].each { |l|
+        data['links'].each do |l|
           links.push(Rubytypeformio::Link.from_json(l.to_json))
-        }
+        end
         obj.links = links
       end
 
-      if (data["id"])
-        obj.id = data["id"]
-      end
+      obj.id = data['id'] if data['id']
 
-      return obj
+      obj
     end
 
     # @return [Form]
     def post
-
-      if (ENV["TYPEFORM_KEY"].nil?)
-        puts "no typeform key set"
+      if ENV['TYPEFORM_KEY'].nil?
+        puts 'no typeform key set'
         return nil
       end
 
       puts 'creating new form with API'
 
-      conn = Faraday.new(:url => 'https://api.typeform.io') do |faraday|
+      conn = Faraday.new(url: 'https://api.typeform.io') do |faraday|
         faraday.request :url_encoded
         faraday.response :logger
         faraday.adapter Faraday.default_adapter
@@ -136,15 +128,13 @@ module Rubytypeformio
 
       resp = conn.post do |req|
         req.url 'https://api.typeform.io/v0.3/forms'
-        req.headers['x-api-token'] = ENV["TYPEFORM_KEY"]
-        req.body = self.compact(self.to_h).to_json.to_s
+        req.headers['x-api-token'] = ENV['TYPEFORM_KEY']
+        req.body = compact(to_h).to_json.to_s
 
-        puts "REQUEST: " + req.to_s
+        puts 'REQUEST: ' + req.to_s
       end
 
-      return Rubytypeformio::Form.from_json(resp.body)
+      Rubytypeformio::Form.from_json(resp.body)
     end
-
   end
-
 end
